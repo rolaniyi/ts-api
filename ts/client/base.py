@@ -603,7 +603,7 @@ class BaseClient(ABC):
 
         # define the arguments
         params = {
-            #"access_token": self._access_token,
+            "access_token": self._access_token,
             "interval": interval,
             "unit": unit,
             "barsback": barsback,
@@ -612,9 +612,9 @@ class BaseClient(ABC):
             "sessiontemplate": sessiontemplate,
         }
         
-        header = {"Authorization": f"Bearer {self._access_token}"}
+        #header = {"Authorization": f"Bearer {self._access_token}"}
         
-        return self._get_request(url=url_endpoint, params=params, headers=header)
+        return self._get_request(url=url_endpoint, params=params)
 
     def get_crypto_symbol_names(self) -> Response | Awaitable[Response]:
         """Fetch all crypto Symbol Names information."""
