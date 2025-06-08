@@ -887,61 +887,6 @@ class BaseClient(ABC):
             params["enddate"] = end_date
         return self._get_request(url=url_endpoint, params=params)
 
-    def get_option_chain(
-        self,
-        symbol: str,
-        expiration: str = None,
-        expiration2: str = None,
-        strike_proximity: int = None,
-        spread_type: str = "Single",
-        risk_free_rate: float = None,
-        price_center: float = None,
-        strike_interval: int = 1,
-        enable_greeks: bool = True,
-        strike_range: str = "All",
-        option_type: str = "All",
-    ) -> Response | Awaitable[Response]:
-        """
-        Get option chain for a symbol.
-        https://api.tradestation.com/docs/specification/#operation/GetOptionChains
-    
-        Args:
-            symbol (str): The underlying symbol.
-            expiration (str): Expiration date (MM-DD-YYYY).
-            expiration2 (str): Second expiration date for spread strategies.
-            strike_proximity (int): # of spreads above/below priceCenter.
-            spread_type (str): Spread type, e.g., 'Single', 'Butterfly'.
-            risk_free_rate (float): e.g., 0.02 for 2%.
-            price_center (float): Strike price center.
-            strike_interval (int): Interval between strikes.
-            enable_greeks (bool): Whether to return Greeks.
-            strike_range (str): 'All', 'ITM', or 'OTM'.
-            option_type (str): 'All', 'Call', or 'Put'.
-    
-        Returns:
-            Response | Awaitable[Response]: API response.
-        """
-        self._token_validation()
-        url_endpoint = self._api_endpoint(f"marketdata/options/chains/{symbol}")
-    
-        params = {
-            "expiration": expiration,
-            "expiration2": expiration2,
-            "strikeProximity": strike_proximity,
-            "spreadType": spread_type,
-            "riskFreeRate": risk_free_rate,
-            "priceCenter": price_center,
-            "strikeInterval": strike_interval,
-            "enableGreeks": str(enable_greeks).lower(),
-            "strikeRange": strike_range,
-            "optionType": option_type,
-        }
-    
-        # Remove None values to avoid sending junk
-        params = {k: v for k, v in params.items() if v is not None}
-    
-        return self._get_request(url=url_endpoint, params=params)
-
     def get_symbol_list(
         self,
         list_id: str,
