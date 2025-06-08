@@ -581,7 +581,6 @@ class BaseClient(ABC):
         interval: int,
         unit: str,
         barsback: Optional[str] = None,
-        firstdate: Optional[str] = None,
         lastdate: Optional[str] = None,
         sessiontemplate: Optional[str] = None,
     ) -> Response | Awaitable[Response]:
@@ -604,10 +603,10 @@ class BaseClient(ABC):
         # define the arguments
         params = {
             "access_token": self._access_token,
-            "interval": interval,
-            "unit": unit,
-            "barsback": barsback,
-            "firstdate": firstdate,
+            "interval": 1,
+            "unit": "Daily",
+            "barsback": 1000,
+            #"firstdate": firstdate,
             "lastdate": lastdate,
             "sessiontemplate": sessiontemplate,
         }
@@ -763,7 +762,7 @@ class BaseClient(ABC):
         self._token_validation()
 
         # define the endpoint.
-        url_endpoint = self._api_endpoint("marketdata/options/strikes/{underlying}")
+        url_endpoint = self._api_endpoint(f"marketdata/options/strikes/{underlying}")
 
         # define the arguments
         params = {
@@ -906,34 +905,34 @@ class BaseClient(ABC):
         Args:
             symbol (str): The symbol.
             expiration (str): Expiration date (YYYY-MM-DD).
-            strike_price_near (float): Near strike price.
-            number_of_strikes (int): Number of strikes.
-            include_quotes (bool): Whether to include quotes (default: False).
-            strategy (str): Option strategy.
-            interval (int): Interval for strikes.
             expiration2 (str): Second expiration date for multi-leg strategies.
+            strikeProximity (float): Near strike price.
+            spreadType (str) : Default "Single".
+            number_of_strikes (int): Number of strikes.
+            strategy (str): Option strategy.
+            strikeInterval (int):
+            enableGreeks (str): 
+            strikeRange (str): Interval for strikes.
+            optionType (str):
 
         Returns:
             Response | Awaitable[Response]: API response.
         """
         self._token_validation()
-        url_endpoint = self._api_endpoint(f"marketdata/options/chains/{symbol}")
+        url_endpoint = self._api_endpoint(f"marketdata/stream/options/chains/{symbol}")
         params = {
             "access_token": self._access_token,
-            "includeQuotes": str(include_quotes).lower(),
-        }
-        if expiration:
-            params["expiration"] = expiration
-        if strike_price_near is not None:
-            params["strikePriceNear"] = strike_price_near
-        if number_of_strikes is not None:
-            params["numberOfStrikes"] = number_of_strikes
-        if strategy:
-            params["strategy"] = strategy
-        if interval is not None:
-            params["interval"] = interval
-        if expiration2:
-            params["expiration2"] = expiration2
+            "expiration": 
+            "expiration2": 
+            "strikeProximity":
+            "spreadType": 
+            "riskFreeRate":
+            "priceCenter":
+            "strikeInterval":
+            "enableGreeks":
+            "strikeRange":
+            "optionType":
+            
         return self._get_request(url=url_endpoint, params=params)
 
     def get_symbol_list(
