@@ -67,7 +67,7 @@ class BaseClient(ABC):
         self, url: str, params: Optional[dict] = None, headers: Optional[dict] = None
     ) -> Union[Response, Coroutine[Any, Any, Response]]:
         """Submit a get request to TradeStation."""
-        pass
+        return requests.get(url, params=params, headers=headers)
 
     @abstractmethod
     def _post_request(
@@ -611,8 +611,10 @@ class BaseClient(ABC):
             "lastdate": lastdate,
             "sessiontemplate": sessiontemplate,
         }
-
-        return self._get_request(url=url_endpoint, headers = {"Authorization": f'Bearer {self._access_token}, params=params)
+        
+        header = {"Authorization": f"Bearer {self._access_token}"}
+        
+        return self._get_request(url=url_endpoint, headers=header, params=params)
 
     def get_crypto_symbol_names(self) -> Response | Awaitable[Response]:
         """Fetch all crypto Symbol Names information."""
