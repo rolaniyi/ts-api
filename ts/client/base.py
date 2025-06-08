@@ -614,7 +614,8 @@ class BaseClient(ABC):
         
         #header = {"Authorization": f"Bearer {self._access_token}"}
         
-        return self._get_request(url=url_endpoint, params=params), url_endpoint
+        #return self._get_request(url=url_endpoint, params=params), url_endpoint
+        return url_endpoint
 
     def get_crypto_symbol_names(self) -> Response | Awaitable[Response]:
         """Fetch all crypto Symbol Names information."""
