@@ -603,7 +603,7 @@ class BaseClient(ABC):
 
         # define the arguments
         params = {
-            "access_token": self._access_token,
+            #"access_token": self._access_token,
             "interval": interval,
             "unit": unit,
             "barsback": barsback,
