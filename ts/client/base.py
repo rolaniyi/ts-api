@@ -810,6 +810,163 @@ class BaseClient(ABC):
 
         return self._get_request(url=url_endpoint, params=params)
 
+
+    # Add these to the Market Data section after the last marketdata method
+
+    def get_market_movers(
+        self,
+        symbol: str,
+        mover_type: str = "percent",
+        number_of_movers: int = 10,
+        direction: str = "up",
+        exchange: str = "NYSE"
+    ) -> Response | Awaitable[Response]:
+        """
+        Fetch the top market movers for the specified symbol group.
+        https://api.tradestation.com/docs/specification/#operation/GetMarketMovers
+
+        Args:
+            symbol (str): The symbol group (e.g., "SP500").
+            mover_type (str): "percent" or "value" (default: "percent").
+            number_of_movers (int): Number of movers to return (default: 10, max: 25).
+            direction (str): "up" or "down" (default: "up").
+            exchange (str): The exchange, e.g., "NYSE" (default: "NYSE").
+
+        Returns:
+            Response | Awaitable[Response]: API response.
+        """
+        self._token_validation()
+        url_endpoint = self._api_endpoint(f"marketdata/marketmovers/{symbol}")
+        params = {
+            "access_token": self._access_token,
+            "type": mover_type,
+            "numberOfMovers": number_of_movers,
+            "direction": direction,
+            "exchange": exchange,
+        }
+        return self._get_request(url=url_endpoint, params=params)
+
+    def get_intraday_ticks(
+        self,
+        symbol: str,
+        interval: int = 1,
+        unit: str = "Minute",
+        start_date: str = None,
+        end_date: str = None,
+        session_template: str = "Default",
+        include_equity: bool = False,
+    ) -> Response | Awaitable[Response]:
+        """
+        Get intraday tick data for a symbol.
+        https://api.tradestation.com/docs/specification/#operation/GetIntradayTicks
+
+        Args:
+            symbol (str): The symbol.
+            interval (int): The interval size.
+            unit (str): The unit of interval (Minute, Second, etc.).
+            start_date (str): Start time (ISO8601 string).
+            end_date (str): End time (ISO8601 string).
+            session_template (str): Session template.
+            include_equity (bool): Whether to include equity.
+
+        Returns:
+            Response | Awaitable[Response]: API response.
+        """
+        self._token_validation()
+        url_endpoint = self._api_endpoint(f"marketdata/intradayticks/{symbol}")
+        params = {
+            "access_token": self._access_token,
+            "interval": interval,
+            "unit": unit,
+            "sessiontemplate": session_template,
+            "includeEquity": str(include_equity).lower(),
+        }
+        if start_date:
+            params["startdate"] = start_date
+        if end_date:
+            params["enddate"] = end_date
+        return self._get_request(url=url_endpoint, params=params)
+
+    def get_option_chain(
+        self,
+        symbol: str,
+        expiration: str = None,
+        strike_price_near: float = None,
+        number_of_strikes: int = None,
+        include_quotes: bool = False,
+        strategy: str = None,
+        interval: int = None,
+        expiration2: str = None,
+    ) -> Response | Awaitable[Response]:
+        """
+        Get option chain for a symbol.
+        https://api.tradestation.com/docs/specification/#operation/GetOptionChains
+
+        Args:
+            symbol (str): The symbol.
+            expiration (str): Expiration date (YYYY-MM-DD).
+            strike_price_near (float): Near strike price.
+            number_of_strikes (int): Number of strikes.
+            include_quotes (bool): Whether to include quotes (default: False).
+            strategy (str): Option strategy.
+            interval (int): Interval for strikes.
+            expiration2 (str): Second expiration date for multi-leg strategies.
+
+        Returns:
+            Response | Awaitable[Response]: API response.
+        """
+        self._token_validation()
+        url_endpoint = self._api_endpoint(f"marketdata/options/chains/{symbol}")
+        params = {
+            "access_token": self._access_token,
+            "includeQuotes": str(include_quotes).lower(),
+        }
+        if expiration:
+            params["expiration"] = expiration
+        if strike_price_near is not None:
+            params["strikePriceNear"] = strike_price_near
+        if number_of_strikes is not None:
+            params["numberOfStrikes"] = number_of_strikes
+        if strategy:
+            params["strategy"] = strategy
+        if interval is not None:
+            params["interval"] = interval
+        if expiration2:
+            params["expiration2"] = expiration2
+        return self._get_request(url=url_endpoint, params=params)
+
+    def get_symbol_list(
+        self,
+        list_id: str,
+    ) -> Response | Awaitable[Response]:
+        """
+        Get the symbol list by ID.
+        https://api.tradestation.com/docs/specification/#operation/GetSymbolList
+
+        Args:
+            list_id (str): The symbol list ID (e.g., "nasdaq", "sp500", etc.)
+
+        Returns:
+            Response | Awaitable[Response]: API response.
+        """
+        self._token_validation()
+        url_endpoint = self._api_endpoint(f"marketdata/symbollists/{list_id}")
+        params = {"access_token": self._access_token}
+        return self._get_request(url=url_endpoint, params=params)
+
+    def get_all_symbol_lists(self) -> Response | Awaitable[Response]:
+        """
+        Get all available symbol lists.
+        https://api.tradestation.com/docs/specification/#operation/GetAllSymbolLists
+
+        Returns:
+            Response | Awaitable[Response]: API response.
+        """
+        self._token_validation()
+        url_endpoint = self._api_endpoint("marketdata/symbollists")
+        params = {"access_token": self._access_token}
+        return self._get_request(url=url_endpoint, params=params)
+
     ###################
     # Order Execution #
     ###################
