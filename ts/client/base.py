@@ -580,10 +580,10 @@ class BaseClient(ABC):
         symbol: str,
         interval: int,
         unit: str,
-        barsback: int,
-        firstdate: datetime,
-        lastdate: datetime,
-        sessiontemplate: str,
+        barsback: Optional[str] = None,
+        firstdate: Optional[str] = None,
+        lastdate: Optional[str] = None,
+        sessiontemplate: Optional[str] = None,
     ) -> Response | Awaitable[Response]:
         """Grabs all the accounts associated with the User.
 
@@ -599,16 +599,16 @@ class BaseClient(ABC):
         self._token_validation()
 
         # define the endpoint.
-        url_endpoint = self._api_endpoint(f"{marketdata/barcharts/{symbol}")
+        url_endpoint = self._api_endpoint(f"marketdata/barcharts/{symbol}")
 
         # define the arguments
         params = {
             "access_token": self._access_token,
             "interval": interval,
             "unit": unit,
-            "barsback": Optional[str] = None,
-            "firstdate": Optional[str] = None,
-            "lastdate": Optional[str] = None,
+            "barsback": barsback,
+            "firstdate": firstdate,
+            "lastdate": lastdate,
             "sessiontemplate": sessiontemplate,
         }
 
