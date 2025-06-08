@@ -888,59 +888,59 @@ class BaseClient(ABC):
         return self._get_request(url=url_endpoint, params=params)
 
     def get_option_chain(
-    self,
-    symbol: str,
-    expiration: str = None,
-    expiration2: str = None,
-    strike_price_near: float = None,
-    number_of_strikes: int = None,
-    include_quotes: bool = False,
-    strategy: str = None,
-    interval: int = None,
-    strike_range: str = None,
-    option_type: str = None,
-    enable_greeks: bool = False,
-) -> Response | Awaitable[Response]:
-    """
-    Get option chain for a symbol.
-    Docs: https://api.tradestation.com/docs/specification/#operation/GetOptionChains
-
-    Args:
-        symbol (str): Underlying symbol.
-        expiration (str): Expiration date (YYYY-MM-DD).
-        expiration2 (str): Second expiration for complex strategies.
-        strike_price_near (float): Near this price.
-        number_of_strikes (int): How many strikes to return.
-        include_quotes (bool): Include real-time quotes.
-        strategy (str): Strategy type (e.g., 'Single').
-        interval (int): Strike interval.
-        strike_range (str): Strike range filter.
-        option_type (str): 'Call', 'Put', or 'All'.
-        enable_greeks (bool): Include Greeks.
-
-    Returns:
-        Response | Awaitable[Response]: The HTTP response.
-    """
-    self._token_validation()
-    url_endpoint = self._api_endpoint(f"marketdata/options/chains/{symbol}")
+        self,
+        symbol: str,
+        expiration: str = None,
+        expiration2: str = None,
+        strike_price_near: float = None,
+        number_of_strikes: int = None,
+        include_quotes: bool = False,
+        strategy: str = None,
+        interval: int = None,
+        strike_range: str = None,
+        option_type: str = None,
+        enable_greeks: bool = False,
+    ) -> Response | Awaitable[Response]:
+        """
+        Get option chain for a symbol.
+        Docs: https://api.tradestation.com/docs/specification/#operation/GetOptionChains
     
-    params = {
-        "expiration": expiration,
-        "expiration2": expiration2,
-        "strikeProximity": strike_price_near,
-        "numberOfStrikes": number_of_strikes,
-        "includeQuotes": str(include_quotes).lower(),
-        "strategy": strategy,
-        "strikeInterval": interval,
-        "strikeRange": strike_range,
-        "optionType": option_type,
-        "enableGreeks": str(enable_greeks).lower(),
-    }
-
-    # Clean up: remove None values
-    params = {k: v for k, v in params.items() if v is not None}
-
-    return self._get_request(url=url_endpoint, params=params)
+        Args:
+            symbol (str): Underlying symbol.
+            expiration (str): Expiration date (YYYY-MM-DD).
+            expiration2 (str): Second expiration for complex strategies.
+            strike_price_near (float): Near this price.
+            number_of_strikes (int): How many strikes to return.
+            include_quotes (bool): Include real-time quotes.
+            strategy (str): Strategy type (e.g., 'Single').
+            interval (int): Strike interval.
+            strike_range (str): Strike range filter.
+            option_type (str): 'Call', 'Put', or 'All'.
+            enable_greeks (bool): Include Greeks.
+    
+        Returns:
+            Response | Awaitable[Response]: The HTTP response.
+        """
+        self._token_validation()
+        url_endpoint = self._api_endpoint(f"marketdata/options/chains/{symbol}")
+        
+        params = {
+            "expiration": expiration,
+            "expiration2": expiration2,
+            "strikeProximity": strike_price_near,
+            "numberOfStrikes": number_of_strikes,
+            "includeQuotes": str(include_quotes).lower(),
+            "strategy": strategy,
+            "strikeInterval": interval,
+            "strikeRange": strike_range,
+            "optionType": option_type,
+            "enableGreeks": str(enable_greeks).lower(),
+        }
+    
+        # Clean up: remove None values
+        params = {k: v for k, v in params.items() if v is not None}
+    
+        return self._get_request(url=url_endpoint, params=params)
 
     def get_symbol_list(
         self,
