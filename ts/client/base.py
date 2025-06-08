@@ -612,7 +612,7 @@ class BaseClient(ABC):
             "sessiontemplate": sessiontemplate,
         }
 
-        return self._get_request(url=url_endpoint, params=params)
+        return self._get_request(url=url_endpoint, params=params, headers=headers)
 
     def get_crypto_symbol_names(self) -> Response | Awaitable[Response]:
         """Fetch all crypto Symbol Names information."""
