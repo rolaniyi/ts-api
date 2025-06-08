@@ -599,7 +599,7 @@ class BaseClient(ABC):
         self._token_validation()
 
         # define the endpoint.
-        url_endpoint = self._api_endpoint(f"marketdata/barcharts/{symbol}")
+        url_endpoint = self._api_endpoint(f"{AUDIENCE_ENDPOINT}/marketdata/barcharts/{symbol}")
 
         # define the arguments
         params = {
