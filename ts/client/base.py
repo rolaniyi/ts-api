@@ -892,52 +892,52 @@ class BaseClient(ABC):
         symbol: str,
         expiration: str = None,
         expiration2: str = None,
-        strike_price_near: float = None,
-        number_of_strikes: int = None,
-        include_quotes: bool = False,
-        strategy: str = None,
-        interval: int = None,
-        strike_range: str = None,
-        option_type: str = None,
-        enable_greeks: bool = False,
+        strike_proximity: int = None,
+        spread_type: str = "Single",
+        risk_free_rate: float = None,
+        price_center: float = None,
+        strike_interval: int = 1,
+        enable_greeks: bool = True,
+        strike_range: str = "All",
+        option_type: str = "All",
     ) -> Response | Awaitable[Response]:
         """
         Get option chain for a symbol.
-        Docs: https://api.tradestation.com/docs/specification/#operation/GetOptionChains
+        https://api.tradestation.com/docs/specification/#operation/GetOptionChains
     
         Args:
-            symbol (str): Underlying symbol.
-            expiration (str): Expiration date (YYYY-MM-DD).
-            expiration2 (str): Second expiration for complex strategies.
-            strike_price_near (float): Near this price.
-            number_of_strikes (int): How many strikes to return.
-            include_quotes (bool): Include real-time quotes.
-            strategy (str): Strategy type (e.g., 'Single').
-            interval (int): Strike interval.
-            strike_range (str): Strike range filter.
-            option_type (str): 'Call', 'Put', or 'All'.
-            enable_greeks (bool): Include Greeks.
+            symbol (str): The underlying symbol.
+            expiration (str): Expiration date (MM-DD-YYYY).
+            expiration2 (str): Second expiration date for spread strategies.
+            strike_proximity (int): # of spreads above/below priceCenter.
+            spread_type (str): Spread type, e.g., 'Single', 'Butterfly'.
+            risk_free_rate (float): e.g., 0.02 for 2%.
+            price_center (float): Strike price center.
+            strike_interval (int): Interval between strikes.
+            enable_greeks (bool): Whether to return Greeks.
+            strike_range (str): 'All', 'ITM', or 'OTM'.
+            option_type (str): 'All', 'Call', or 'Put'.
     
         Returns:
-            Response | Awaitable[Response]: The HTTP response.
+            Response | Awaitable[Response]: API response.
         """
         self._token_validation()
         url_endpoint = self._api_endpoint(f"marketdata/options/chains/{symbol}")
-        
+    
         params = {
             "expiration": expiration,
             "expiration2": expiration2,
-            "strikeProximity": strike_price_near,
-            "numberOfStrikes": number_of_strikes,
-            "includeQuotes": str(include_quotes).lower(),
-            "strategy": strategy,
-            "strikeInterval": interval,
+            "strikeProximity": strike_proximity,
+            "spreadType": spread_type,
+            "riskFreeRate": risk_free_rate,
+            "priceCenter": price_center,
+            "strikeInterval": strike_interval,
+            "enableGreeks": str(enable_greeks).lower(),
             "strikeRange": strike_range,
             "optionType": option_type,
-            "enableGreeks": str(enable_greeks).lower(),
         }
     
-        # Clean up: remove None values
+        # Remove None values to avoid sending junk
         params = {k: v for k, v in params.items() if v is not None}
     
         return self._get_request(url=url_endpoint, params=params)
