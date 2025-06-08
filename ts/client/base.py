@@ -599,16 +599,16 @@ class BaseClient(ABC):
         self._token_validation()
 
         # define the endpoint.
-        url_endpoint = self._api_endpoint(f"{AUDIENCE_ENDPOINT}/marketdata/barcharts/{symbol}")
+        url_endpoint = self._api_endpoint(f"{marketdata/barcharts/{symbol}")
 
         # define the arguments
         params = {
             "access_token": self._access_token,
             "interval": interval,
             "unit": unit,
-            "barsback": barsback,
-            "firstdate": firstdate,
-            "lastdate": lastdate,
+            "barsback": Optional[str] = None,
+            "firstdate": Optional[str] = None,
+            "lastdate": Optional[str] = None,
             "sessiontemplate": sessiontemplate,
         }
 
