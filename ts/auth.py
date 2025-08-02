@@ -220,9 +220,7 @@ def client_from_manual_flow(
     #query = "&".join(f"{k}={urllib.parse.quote(v, safe='')}" for k, v in params)
     #auth_url = f"{AUTH_ENDPOINT}?{query}"
     
-    auth_url = f'https://signin.tradestation.com/authorize?response_type=code&client_id={client_id}&audience
-    =https%3A%2F%2Fapi.tradestation.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000&scope=openid%
-    20MarketData%20profile%20ReadAccount%20Trade%20offline_access%20Matrix%20OptionSpreads'
+    auth_url = f'https://signin.tradestation.com/authorize?response_type=code&client_id={client_id}&audience=https%3A%2F%2Fapi.tradestation.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000&scope=openid%20MarketData%20profile%20ReadAccount%20Trade%20offline_access%20Matrix%20OptionSpreads'
     
     print(f"Please go to this URL to authorize the application: {auth_url}")
 
