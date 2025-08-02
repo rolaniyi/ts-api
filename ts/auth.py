@@ -24,6 +24,7 @@ from typing import Any, Callable, Dict, Union
 from urllib.parse import parse_qs, urlparse
 
 import httpx
+import urllib.parse
 
 from ts.client.asynchronous import AsyncClient
 from ts.client.synchronous import Client
@@ -208,11 +209,14 @@ def client_from_manual_flow(
         "response_type": "code",
         "client_id": client_key,
         "audience": AUDIENCE_ENDPOINT,
-        "redirect_uri": redirect_uri,
-        #"state": secrets.token_hex(16),  # Ideally, this should be dynamically generated for each request
+        "redirect_uri": redirect_uri,  # e.g. "http://localhost:3000"
+        # "state": secrets.token_hex(16),  # optional CSRF token
+        # Note: removed 'Crypto' scope as it is no longer supported.
         "scope": "openid MarketData profile ReadAccount Trade offline_access Matrix OptionSpreads",
     }
-    url = httpx.get(AUTH_ENDPOINT, params=params).url
+    
+    query = urllib.parse.urlencode(params, safe="")
+    url = f"{AUTH_ENDPOINT}?{query}"
     print(f"Please go to this URL to authorize the application: {url}")
 
     # Obtain Authorization Code from User
