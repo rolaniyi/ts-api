@@ -205,22 +205,20 @@ def client_from_manual_flow(
     - The function will automatically request tokens and initialize the client.
     """
     # Build the Authorization URL
-    params = [
-    ("response_type", "code"),
-    ("client_id", client_key),
-    ("audience", AUDIENCE_ENDPOINT),
-    ("redirect_uri", redirect_uri),  # e.g. "http://localhost:3000"
-    # Removed "Crypto" from the scope list
-    ("scope", "openid MarketData profile ReadAccount Trade offline_access Matrix OptionSpreads"),
-    # Optionally include a state parameter here to mitigate CSRF
-    # ("state", secrets.token_hex(16)),
-    ]
-
-    # Percent‑encode each value using urllib.parse.quote (not quote_plus).
-    #query = "&".join(f"{k}={urllib.parse.quote(v, safe='')}" for k, v in params)
-    #auth_url = f"{AUTH_ENDPOINT}?{query}"
+     #params = {
+        #"response_type": "code",
+        #"client_id": client_key,
+        #"audience": AUDIENCE_ENDPOINT,
+        #"redirect_uri": redirect_uri,  # e.g. "http://localhost:3000"
+        # "state": secrets.token_hex(16),  # optional CSRF token
+        # Note: removed 'Crypto' scope as it is no longer supported.
+        #"scope": "openid MarketData profile ReadAccount Trade offline_access Matrix OptionSpreads",
+    #}
+    #query = urllib.parse.urlencode(params, safe="")
+    #url = f"{AUTH_ENDPOINT}?{query}"
+    #print(f"Please go to this URL to authorize the application: {url}")
     
-    auth_url = f'https://signin.tradestation.com/authorize?response_type=code&client_id={client_id}&audience=https%3A%2F%2Fapi.tradestation.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000&scope=openid%20MarketData%20profile%20ReadAccount%20Trade%20offline_access%20Matrix%20OptionSpreads'
+    auth_url = f'https://signin.tradestation.com/authorize?response_type=code&client_id={client_key}&audience=https%3A%2F%2Fapi.tradestation.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000&scope=openid%20MarketData%20profile%20ReadAccount%20Trade%20offline_access%20Matrix%20OptionSpreads'
     
     print(f"Please go to this URL to authorize the application: {auth_url}")
 
