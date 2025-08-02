@@ -205,19 +205,21 @@ def client_from_manual_flow(
     - The function will automatically request tokens and initialize the client.
     """
     # Build the Authorization URL
-    params = {
-        "response_type": "code",
-        "client_id": client_key,
-        "audience": AUDIENCE_ENDPOINT,
-        "redirect_uri": redirect_uri,  # e.g. "http://localhost:3000"
-        # "state": secrets.token_hex(16),  # optional CSRF token
-        # Note: removed 'Crypto' scope as it is no longer supported.
-        "scope": "openid MarketData profile ReadAccount Trade offline_access Matrix OptionSpreads",
-    }
-    
-    query = urllib.parse.urlencode(params, safe="")
-    url = f"{AUTH_ENDPOINT}?{query}"
-    print(f"Please go to this URL to authorize the application: {url}")
+    params = [
+    ("response_type", "code"),
+    ("client_id", client_key),
+    ("audience", AUDIENCE_ENDPOINT),
+    ("redirect_uri", redirect_uri),  # e.g. "http://localhost:3000"
+    # Removed "Crypto" from the scope list
+    ("scope", "openid MarketData profile ReadAccount Trade offline_access Matrix OptionSpreads"),
+    # Optionally include a state parameter here to mitigate CSRF
+    # ("state", secrets.token_hex(16)),
+    ]
+
+    # Percent‑encode each value using urllib.parse.quote (not quote_plus).
+    query = "&".join(f"{k}={urllib.parse.quote(v, safe='')}" for k, v in params)
+    auth_url = f"{AUTH_ENDPOINT}?{query}"
+    print(f"Please go to this URL to authorize the application: {auth_url}")
 
     # Obtain Authorization Code from User
     auth_redirect = input("Please enter the full redirect URL you were returned to: ")
