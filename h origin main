@@ -1,0 +1,3 @@
+[33mcd3fa56[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix scope parameter to use %20 encoding as requested
+[33m2431282[m Fix authentication URL generation to use proper URL encoding and correct scope
+[33m30a9e83[m Revert client_from_manual_flow to original structure with Python 3.6 compatibility fixes
