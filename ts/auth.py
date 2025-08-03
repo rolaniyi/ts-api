@@ -143,7 +143,7 @@ def __token_loader(token_path: str) -> Callable[[], Dict[str, Any]]:
 
 def easy_client(
     client_key: str, client_secret: str, redirect_uri: str, paper_trade: bool = True, asyncio: bool = False
-) -> AsyncClient | Client:
+) -> Union[AsyncClient, Client]:
     """
     Initialize and return a client object based on existing token or manual flow.
 
@@ -180,7 +180,7 @@ def easy_client(
 
 def client_from_manual_flow(
     client_key: str, client_secret: str, redirect_uri: str, paper_trade: bool = True, asyncio: bool = False
-) -> AsyncClient | Client:
+) -> Union[AsyncClient, Client]:
     """
     Initialize and return a client object by manually completing the OAuth2 flow.
 
@@ -205,22 +205,16 @@ def client_from_manual_flow(
     - The function will automatically request tokens and initialize the client.
     """
     # Build the Authorization URL
-     #params = {
-        #"response_type": "code",
-        #"client_id": client_key,
-        #"audience": AUDIENCE_ENDPOINT,
-        #"redirect_uri": redirect_uri,  # e.g. "http://localhost:3000"
-        # "state": secrets.token_hex(16),  # optional CSRF token
-        # Note: removed 'Crypto' scope as it is no longer supported.
-        #"scope": "openid MarketData profile ReadAccount Trade offline_access Matrix OptionSpreads",
-    #}
-    #query = urllib.parse.urlencode(params, safe="")
-    #url = f"{AUTH_ENDPOINT}?{query}"
-    #print(f"Please go to this URL to authorize the application: {url}")
-    
-    auth_url = f'https://signin.tradestation.com/authorize?response_type=code&client_id={client_key}&audience=https%3A%2F%2Fapi.tradestation.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000&scope=openid%20MarketData%20profile%20ReadAccount%20Trade%20offline_access%20Matrix%20OptionSpreads'
-    
-    print(f"Please go to this URL to authorize the application: {auth_url}")
+    params = {
+        "response_type": "code",
+        "client_id": client_key,
+        "redirect_uri": redirect_uri,
+        "audience": AUDIENCE_ENDPOINT,
+        "state": secrets.token_hex(16),  # Ideally, this should be dynamically generated for each request
+        "scope": "MarketData ReadAccount Trade Crypto OptionsSpreads Matrix openid offline_access profile email",
+    }
+    url = httpx.get(AUTH_ENDPOINT, params=params).url
+    print(f"Please go to this URL to authorize the application: {url}")
 
     # Obtain Authorization Code from User
     auth_redirect = input("Please enter the full redirect URL you were returned to: ")
@@ -243,14 +237,14 @@ def client_from_manual_flow(
         print(f"Failed to authorize token. {response.status_code}")
         raise ValueError(f"Failed to authorize token. {response.status_code}")  # Or raise an exception
 
-    token: dict[str, Union[str, int]] = response.json()
+    token: Dict[str, Union[str, int]] = response.json()
 
     # Update Token State (this function should be defined elsewhere)
     update_token = __update_token("ts_state.json")
     update_token(token)
 
     # Initialize the Client
-    client_object: type[AsyncClient] | type[Client] = AsyncClient if asyncio else Client
+    client_object: Union[type[AsyncClient], type[Client]] = AsyncClient if asyncio else Client
 
     return client_object(
         client_id=client_key,
@@ -265,7 +259,7 @@ def client_from_manual_flow(
 
 def client_from_token_file(
     client_key: str, client_secret: str, paper_trade: bool = True, asyncio: bool = False
-) -> AsyncClient | Client:
+) -> Union[AsyncClient, Client]:
     """
     Initialize and return a client object based on a given token file.
 
@@ -309,7 +303,7 @@ def client_from_access_functions(
     token_update_func: Callable,
     paper_trade: bool = True,
     asyncio: bool = False,
-) -> AsyncClient | Client:
+) -> Union[AsyncClient, Client]:
     """
     Initialize and return a client object based on the provided access functions and settings.
 
