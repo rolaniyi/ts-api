@@ -210,10 +210,11 @@ def client_from_manual_flow(
         "client_id": client_key,
         "audience": AUDIENCE_ENDPOINT,
         "redirect_uri": redirect_uri,
-        "scope": "openid MarketData profile ReadAccount Trade offline_access Matrix OptionSpreads",
     }
     query = urllib.parse.urlencode(params, safe="")
-    url = f"{AUTH_ENDPOINT}?{query}"
+    # Add scope with %20 encoding manually
+    scope = "openid%20MarketData%20profile%20ReadAccount%20Trade%20offline_access%20Matrix%20OptionSpreads"
+    url = f"{AUTH_ENDPOINT}?{query}&scope={scope}"
     print(f"Please go to this URL to authorize the application: {url}")
 
     # Obtain Authorization Code from User
