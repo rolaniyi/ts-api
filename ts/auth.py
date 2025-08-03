@@ -208,12 +208,12 @@ def client_from_manual_flow(
     params = {
         "response_type": "code",
         "client_id": client_key,
-        "redirect_uri": redirect_uri,
         "audience": AUDIENCE_ENDPOINT,
-        "state": secrets.token_hex(16),  # Ideally, this should be dynamically generated for each request
-        "scope": "MarketData ReadAccount Trade Crypto OptionsSpreads Matrix openid offline_access profile email",
+        "redirect_uri": redirect_uri,
+        "scope": "openid MarketData profile ReadAccount Trade offline_access Matrix OptionSpreads",
     }
-    url = httpx.get(AUTH_ENDPOINT, params=params).url
+    query = urllib.parse.urlencode(params, safe="")
+    url = f"{AUTH_ENDPOINT}?{query}"
     print(f"Please go to this URL to authorize the application: {url}")
 
     # Obtain Authorization Code from User
