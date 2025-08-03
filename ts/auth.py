@@ -13,7 +13,7 @@ Example:
 ```python
 from auth import easy_client
 
-client = easy_client("client_key", "client_secret", "http://localhost/callback")
+client = easy_client("client_key", "client_secret", "http://localhost:3000")
 """
 
 import json
@@ -160,7 +160,7 @@ def easy_client(
 
     Example Usage:
     ```
-    client = easy_client("client_key", "client_secret", "http://localhost/callback", paper_trade=True, asyncio=False)
+    client = easy_client("client_key", "client_secret", "http://localhost:3000", paper_trade=True, asyncio=False)
     ```
 
     Notes:
@@ -197,7 +197,7 @@ def client_from_manual_flow(
 
     Example Usage:
     ```
-    client = client_from_manual_flow("client_key", "client_secret", "http://localhost:80/", paper_trade=True, asyncio=False)
+    client = client_from_manual_flow("client_key", "client_secret", "http://localhost:3000", paper_trade=True, asyncio=False)
     ```
 
     Notes:
