@@ -221,7 +221,17 @@ def client_from_manual_flow(
     auth_redirect = input("Please enter the full redirect URL you were returned to: ")
     parsed_url = urlparse(auth_redirect)
     query_params = parse_qs(parsed_url.query)
-    authorization_code = query_params.get("code", [])[0].strip()
+    
+    # Check if authorization code exists
+    code_list = query_params.get("code", [])
+    if not code_list:
+        print(f"Error: No authorization code found in the redirect URL.")
+        print(f"URL received: {auth_redirect}")
+        print(f"Query parameters found: {query_params}")
+        print("Please make sure you're copying the complete redirect URL from your browser.")
+        raise ValueError("No authorization code found in redirect URL")
+    
+    authorization_code = code_list[0].strip()
 
     # Request Tokens Using Authorization Code
     payload = {
@@ -234,9 +244,10 @@ def client_from_manual_flow(
     headers = {"content-type": "application/x-www-form-urlencoded"}
     response: httpx.Response = httpx.post(TOKEN_ENDPOINT, data=payload, headers=headers)
 
-    if response.status_code == httpx._status_codes.codes.BAD_REQUEST:
-        print(f"Failed to authorize token. {response.status_code}")
-        raise ValueError(f"Failed to authorize token. {response.status_code}")  # Or raise an exception
+    if response.status_code != 200:
+        print(f"Failed to authorize token. Status code: {response.status_code}")
+        print(f"Response: {response.text}")
+        raise ValueError(f"Failed to authorize token. Status code: {response.status_code}")
 
     token: Dict[str, Union[str, int]] = response.json()
 
